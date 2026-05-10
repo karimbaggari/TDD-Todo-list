@@ -24,6 +24,15 @@ export async function createTodo(title: string): Promise<Todo> {
   return todo;
 }
 
+function validateTitleUpdate(
+  title: string,
+  todo: Todo
+): string | null {
+  if (todo.completed) return null;
+  const trimmed = title.trim();
+  return trimmed || null;
+}
+
 export async function updateTodo(
   id: string,
   updates: Partial<Pick<Todo, "title" | "completed">>
@@ -32,10 +41,9 @@ export async function updateTodo(
   if (!todo) return null;
 
   if (updates.title !== undefined) {
-    if (todo.completed) return null;
-    const trimmed = updates.title.trim();
-    if (!trimmed) return null;
-    updates = { ...updates, title: trimmed };
+    const validTitle = validateTitleUpdate(updates.title, todo);
+    if (!validTitle) return null;
+    updates = { ...updates, title: validTitle };
   }
 
   const updated = { ...todo, ...updates };
