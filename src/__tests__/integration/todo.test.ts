@@ -101,6 +101,7 @@ describe("toggleTodo", () => {
 
     const [updated] = await getTodos();
     expect(updated.completed).toBe(true);
+    expect(updated.completedAt).not.toBeNull();
   });
 
   it("should toggle a todo back to incomplete", async () => {
@@ -112,6 +113,7 @@ describe("toggleTodo", () => {
 
     const [updated] = await getTodos();
     expect(updated.completed).toBe(false);
+    expect(updated.completedAt).toBeNull();
   });
 
   it("should not crash when toggling a non-existent id", async () => {
