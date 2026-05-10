@@ -18,6 +18,7 @@ export async function createTodo(title: string): Promise<Todo> {
     id: crypto.randomUUID(),
     title,
     completed: false,
+    completedAt: null,
     createdAt: new Date().toISOString(),
   };
   await writeOne(todo.id, todo);
@@ -47,6 +48,13 @@ export async function updateTodo(
   }
 
   const updated = { ...todo, ...updates };
+
+  if (updates.completed === true) {
+    updated.completedAt = new Date().toISOString();
+  } else if (updates.completed === false) {
+    updated.completedAt = null;
+  }
+
   await writeOne(id, updated);
   return updated;
 }
