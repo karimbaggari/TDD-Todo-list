@@ -11,6 +11,7 @@ function makeTodo(overrides: Partial<Todo> = {}): Todo {
     id: "test-id-1",
     title: "Buy milk",
     completed: false,
+    completedAt: null,
     createdAt: "2026-05-09T00:00:00.000Z",
     ...overrides,
   };
@@ -51,6 +52,12 @@ describe("creating a todo", () => {
 
     expect(result.createdAt).toBeDefined();
     expect(new Date(result.createdAt).toISOString()).toBe(result.createdAt);
+  });
+
+  it("has no completedAt timestamp when first created", async () => {
+    const result = await createTodo("Buy milk");
+
+    expect(result.completedAt).toBeNull();
   });
 
   it("persists to storage", async () => {
@@ -122,6 +129,30 @@ describe("updating a todo", () => {
 
     expect(result!.completed).toBe(true);
     expect(result!.title).toBe("Buy milk");
+  });
+
+  it("records a timestamp when completing a todo", async () => {
+    const todo = makeTodo({ completed: false, completedAt: null });
+    mockedStore.readOne.mockResolvedValue(todo);
+    mockedStore.writeOne.mockResolvedValue();
+
+    const before = new Date().toISOString();
+    const result = await updateTodo("test-id-1", { completed: true });
+    const after = new Date().toISOString();
+
+    expect(result!.completedAt).not.toBeNull();
+    expect(result!.completedAt! >= before).toBe(true);
+    expect(result!.completedAt! <= after).toBe(true);
+  });
+
+  it("clears the timestamp when uncompleting a todo", async () => {
+    const todo = makeTodo({ completed: true, completedAt: "2026-05-09T12:00:00.000Z" });
+    mockedStore.readOne.mockResolvedValue(todo);
+    mockedStore.writeOne.mockResolvedValue();
+
+    const result = await updateTodo("test-id-1", { completed: false });
+
+    expect(result!.completedAt).toBeNull();
   });
 
   it("trims whitespace from an updated title", async () => {

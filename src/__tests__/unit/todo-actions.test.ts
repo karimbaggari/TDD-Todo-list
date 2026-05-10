@@ -15,6 +15,7 @@ function makeTodo(overrides: Partial<Todo> = {}): Todo {
     id: "test-id-1",
     title: "Buy milk",
     completed: false,
+    completedAt: null,
     createdAt: "2026-05-09T00:00:00.000Z",
     ...overrides,
   };
