@@ -36,6 +36,12 @@ yarn-error.log*
 # local data store
 /data
 
+# claude
+.claude/
+
+# test results
+test-results/
+
 # vercel
 .vercel
 
