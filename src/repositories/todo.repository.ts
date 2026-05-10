@@ -32,6 +32,7 @@ export async function updateTodo(
   if (!todo) return null;
 
   if (updates.title !== undefined) {
+    if (todo.completed) return null;
     const trimmed = updates.title.trim();
     if (!trimmed) return null;
     updates = { ...updates, title: trimmed };
