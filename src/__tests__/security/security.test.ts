@@ -31,20 +31,28 @@ afterAll(async () => {
 
 // ─── Path traversal ─────────────────────────────────────────
 
-describe("path traversal", () => {
-  it("should not read files outside data directory", async () => {
+describe("path traversal prevention", () => {
+  it("cannot read files outside the data directory", async () => {
     const result = await repository.getTodoById("../../etc/passwd");
     expect(result).toBeNull();
   });
 
-  it("should not delete files outside data directory", async () => {
-    const result = await repository.removeTodo("../package.json");
-    // Should either fail safely or not touch the file
-    const packageExists = await fs.access(path.join(process.cwd(), "package.json")).then(() => true).catch(() => false);
-    expect(packageExists).toBe(true);
+  it("cannot delete files outside the data directory", async () => {
+    // Create a real file that a traversal attack would target
+    const targetPath = path.join(TEST_DIR, "..", "traversal-target.json");
+    await fs.writeFile(targetPath, JSON.stringify({ id: "target" }));
+
+    const result = await repository.removeTodo("../traversal-target");
+
+    expect(result).toBe(false);
+    // Verify the file outside the data dir was NOT deleted
+    const stillExists = await fs.access(targetPath).then(() => true).catch(() => false);
+    expect(stillExists).toBe(true);
+
+    await fs.unlink(targetPath);
   });
 
-  it("should not write files outside data directory via toggle", async () => {
+  it("cannot write files outside the data directory via toggle", async () => {
     await expect(toggleTodo("../../malicious")).resolves.toBeUndefined();
   });
 });

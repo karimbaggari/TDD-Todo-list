@@ -12,7 +12,11 @@ export async function ensureDataDir() {
 }
 
 export function filePath(id: string) {
-  return path.join(DATA_DIR, `${id}.json`);
+  const resolved = path.resolve(DATA_DIR, `${id}.json`);
+  if (!resolved.startsWith(path.resolve(DATA_DIR) + path.sep)) {
+    throw new Error("Path traversal detected");
+  }
+  return resolved;
 }
 
 export async function readAll<T>(): Promise<T[]> {
