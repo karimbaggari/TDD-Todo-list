@@ -1,0 +1,39 @@
+{
+  "name": "tdd-todo-list",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "test": "jest",
+    "test:smoke": "playwright test --project=smoke",
+    "test:e2e": "playwright test --project=e2e",
+    "test:system": "playwright test --project=system",
+    "test:acceptance": "playwright test --project=acceptance",
+    "test:performance": "jest --testPathPatterns=performance",
+    "test:usability": "playwright test --project=usability",
+    "test:security": "jest --testPathPatterns='security.*\\.test' --testPathIgnorePatterns='/node_modules/' && playwright test --project=security"
+  },
+  "dependencies": {
+    "next": "16.2.6",
+    "react": "19.2.4",
+    "react-dom": "19.2.4"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.59.1",
+    "@tailwindcss/postcss": "^4",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.6",
+    "jest": "^30.4.1",
+    "tailwindcss": "^4",
+    "ts-jest": "^29.4.9",
+    "ts-node": "^10.9.2",
+    "typescript": "^5"
+  }
+}
