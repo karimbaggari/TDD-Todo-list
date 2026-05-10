@@ -1,6 +1,6 @@
 import fs from "fs/promises";
 import path from "path";
-import { setDataDir, readAll, readOne, writeOne, deleteOne } from "@/helpers/json-store";
+import { setDataDir, filePath, readAll, readOne, writeOne, deleteOne } from "@/helpers/json-store";
 
 const TEST_DIR = path.join(process.cwd(), "data-json-store-test");
 
@@ -104,5 +104,17 @@ describe("deleting records", () => {
     const result = await deleteOne("non-existent");
 
     expect(result).toBe(false);
+  });
+});
+
+// ─── path safety ────────────────────────────────────────────
+
+describe("path safety", () => {
+  it("rejects ids that would escape the data directory", () => {
+    expect(() => filePath("../../etc/passwd")).toThrow("Path traversal");
+  });
+
+  it("allows simple ids", () => {
+    expect(() => filePath("abc-123")).not.toThrow();
   });
 });
