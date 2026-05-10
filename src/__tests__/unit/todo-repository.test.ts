@@ -154,6 +154,16 @@ describe("updating a todo", () => {
     expect(mockedStore.writeOne).not.toHaveBeenCalled();
   });
 
+  it("cannot change the title of a completed todo", async () => {
+    const todo = makeTodo({ completed: true });
+    mockedStore.readOne.mockResolvedValue(todo);
+
+    const result = await updateTodo("test-id-1", { title: "New title" });
+
+    expect(result).toBeNull();
+    expect(mockedStore.writeOne).not.toHaveBeenCalled();
+  });
+
   it("persists the changes", async () => {
     const todo = makeTodo();
     mockedStore.readOne.mockResolvedValue(todo);
